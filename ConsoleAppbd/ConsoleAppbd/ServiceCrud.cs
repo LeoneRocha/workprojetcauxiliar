@@ -30,11 +30,11 @@ namespace ConsoleAppbd
                 Console.WriteLine("Cliente não encontrado.");
             }
         }
-        public void Insert(Cliente novoCliente)
+        public Cliente Insert(Cliente novoCliente)
         {
             // Inserindo um novo cliente 
-            _clienteRepository.Insert(novoCliente);
             Console.WriteLine("Novo cliente inserido com sucesso!");
+            return _clienteRepository.Insert(novoCliente);
         }
         public Cliente GetById(int clienteId)
         {

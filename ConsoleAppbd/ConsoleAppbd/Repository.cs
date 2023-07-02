@@ -84,7 +84,7 @@ namespace ConsoleAppbd
             return null;
         }
 
-        public void Insert(T entity)
+        public T Insert(T entity)
         {
             using (SqlConnection connection = new SqlConnection(connectionString))
             {
@@ -99,11 +99,18 @@ namespace ConsoleAppbd
                         {
                             cmd.Parameters.AddWithValue($"@{property.Name}", property.GetValue(entity));
                         }
-                    }
+                    } 
+                    cmd.Parameters.Add("@InsertedId", SqlDbType.Int).Direction = ParameterDirection.Output; // Parâmetro de saída para o ID inserido
                     connection.Open();
                     cmd.ExecuteNonQuery();
+
+                    // Recupera o ID inserido
+                    int insertedId = Convert.ToInt32(cmd.Parameters["@InsertedId"].Value);
+                    // Atualiza a propriedade "Id" do objeto passado como parâmetro
+                    typeof(T).GetProperty("Id").SetValue(entity, insertedId); 
                 }
-            }
+            } 
+            return entity;
         }
 
         public void Update(T entity)
@@ -121,8 +128,9 @@ namespace ConsoleAppbd
                     }
                     connection.Open();
                     cmd.ExecuteNonQuery();
+                     
                 }
-            }
+            }  
         }
 
         public void Delete(int id)
@@ -130,7 +138,7 @@ namespace ConsoleAppbd
             using (SqlConnection connection = new SqlConnection(connectionString))
             {
                 string typeName = typeof(T).Name;
-                string procedureName = $"usp_Delete{typeName}";
+                string procedureName = $"usp_Deletar{typeName}";
                 using (SqlCommand cmd = new SqlCommand(procedureName, connection))
                 {
                     cmd.CommandType = CommandType.StoredProcedure;

@@ -26,14 +26,7 @@ BEGIN
 END;
 
 GO 
-
-CREATE PROCEDURE usp_InserirCliente
-    @Nome NVARCHAR(100),
-    @Email NVARCHAR(100)
-AS
-BEGIN
-    INSERT INTO Clientes (Nome, Email) VALUES (@Nome, @Email);
-END;
+ 
 
 
 GO 
@@ -54,4 +47,18 @@ CREATE PROCEDURE usp_DeletarCliente
 AS
 BEGIN
     DELETE FROM Clientes WHERE Id = @Id;
+END;
+
+
+CREATE PROCEDURE usp_InserirCliente
+    @Nome NVARCHAR(100),
+    @Email NVARCHAR(100),
+    @InsertedId INT OUTPUT
+AS
+BEGIN
+    INSERT INTO Clientes (Nome, Email)
+    VALUES (@Nome, @Email);
+
+    -- Retorna o ID inserido
+    SET @InsertedId = SCOPE_IDENTITY();
 END;
